@@ -24,6 +24,9 @@
  *            Michael Lomnitz (mrlomnitz@lbl.gov)
  *            Mustafa Mustafa (mmustafa@lbl.gov)
  *            Jochen Thaeder  (jmthader@lbl.gov)
+ *            Miroslav Simko* (simko@ujf.cas.cz)
+ *
+ *  *Maintainer of the code
  *
  * **************************************************
  */
@@ -48,7 +51,7 @@
 #include <ctime>
 #include <cstdio>
 
-#include "StPicoDpmAnaMaker/StPicoDpmAnaMaker.h" //kvapil
+#include "StPicoQaMaker/StPicoQaMaker.h" // msimko
 
 #include "StRefMultCorr/StRefMultCorr.h"
 #include "StRefMultCorr/CentralityMaker.h"
@@ -61,7 +64,7 @@ class StChain;
 
 StChain *chain;
 
-void runPicoDpmAnaMaker(const Char_t *inputFile="test.list", const Char_t *outputFile="outputBaseName",  
+void runPicoQaMaker(const Char_t *inputFile="test.list", const Char_t *outputFile="outputBaseName",  
 			 const unsigned int makerMode = 0 /*kAnalyze*/,
 			 const Char_t *badRunListFileName = "picoList_bad_MB.list", const Char_t *treeName = "picoHFtree",
 			 const Char_t *productionBasePath = "root://xrdstar.rcf.bnl.gov:1095//home/starlib/home/starreco/reco/AuAu_200_production_2016/ReversedFullField/P16ij/2016",
@@ -136,14 +139,14 @@ void runPicoDpmAnaMaker(const Char_t *inputFile="test.list", const Char_t *outpu
   StPicoDstMaker::PicoIoMode myMode = StPicoDstMaker::PicoIoMode::IoRead; //SL16j: See StRoot/StPicoDstMaker/StpicodstMaker.h: 28: enum PicoIoMode {IoWrite=1, IoRead=2};
   StPicoDstMaker* picoDstMaker = new StPicoDstMaker(myMode, sInputFile, "picoDstMaker");
 //  StPicoDstMaker* picoDstMaker = new StPicoDstMaker(2, sInputFile, "picoDstMaker"); //for local testing only
-  StPicoDpmAnaMaker* picoDpmAnaMaker = new StPicoDpmAnaMaker("picoDpmAnaMaker", picoDstMaker, outputFile, sInputListHF);
-  picoDpmAnaMaker->setMakerMode(makerMode);
-  picoDpmAnaMaker->setDecayChannel(StPicoDpmAnaMaker::kChannel1);//kvapil
-  picoDpmAnaMaker->setTreeName(treeName);
-  //picoDpmAnaMaker->setMcMode(mcMode); commented kvapil
+  StPicoQaMaker* picoQaMaker = new StPicoQaMaker("picoQaMaker", picoDstMaker, outputFile, sInputListHF);
+  picoQaMaker->setMakerMode(makerMode);
+  picoQaMaker->setDecayChannel(StPicoQaMaker::kChannel1);//msimko
+  picoQaMaker->setTreeName(treeName);
+  //picoQaMaker->setMcMode(mcMode); commented msimko
   
   StHFCuts* hfCuts = new StHFCuts("hfBaseCuts");
-  picoDpmAnaMaker->setHFBaseCuts(hfCuts);
+  picoQaMaker->setHFBaseCuts(hfCuts);
 
   // ---------------------------------------------------
   // -- Set Base cuts for HF analysis
@@ -172,8 +175,9 @@ void runPicoDpmAnaMaker(const Char_t *inputFile="test.list", const Char_t *outpu
   hfCuts->addTriggerId(520832);    // VPDMB-5-p-hlt
   hfCuts->addTriggerId(520842);    // VPDMB-5-p-hlt
 	
-  hfCuts->setCutNHitsFitMin(15); //kvapil 20 to 15
-	hfCuts->setCutNHitsFitMinHist(20); //for QA  histograms and general QA, Vanek
+  // hfCuts->setCutNHitsFitMin(15); //msimko 20 to 15
+  hfCuts->setCutNHitsFitMinHist(20); //for QA  histograms and general QA, msimko
+
   hfCuts->setCutRequireHFT(true);
 
   hfCuts->setCutDcaMin(0.009,StHFCuts::kPion); //federic 1aug2016
@@ -186,7 +190,7 @@ void runPicoDpmAnaMaker(const Char_t *inputFile="test.list", const Char_t *outpu
 
   // -- Channel0
   //picoHFMyAnaMaker->setDecayMode(StPicoHFEvent::kTwoParticleDecay);
-  picoDpmAnaMaker->setDecayMode(StPicoHFEvent::kThreeParticleDecay); //kvapil
+  picoQaMaker->setDecayMode(StPicoHFEvent::kThreeParticleDecay); //msimko
 
   // -- ADD USER CUTS HERE ----------------------------
 	
@@ -220,7 +224,7 @@ void runPicoDpmAnaMaker(const Char_t *inputFile="test.list", const Char_t *outpu
   // set refmultCorr
 //  cout<<"test"<<endl;
   StRefMultCorr* grefmultCorrUtil = CentralityMaker::instance()->getgRefMultCorr_P16id(); //new StRefMultCorr, info about Run16, SL16d in the same file as for Run14, SL16d
-  picoDpmAnaMaker->setRefMutCorr(grefmultCorrUtil);
+  picoQaMaker->setRefMutCorr(grefmultCorrUtil);
 //  cout<<"test2"<<endl;
   // ========================================================================================
 

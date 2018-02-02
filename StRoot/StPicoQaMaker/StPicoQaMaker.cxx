@@ -1,4 +1,4 @@
-#include "StPicoDpmAnaMaker.h"
+#include "StPicoQaMaker.h"
 //#include "StPicoHFMaker/StHFCuts.h"
 #include <iostream>
 #include <fstream>
@@ -6,12 +6,12 @@
 #include <vector>
 #include "TMath.h"
 
-ClassImp(StPicoDpmAnaMaker)
+ClassImp(StPicoQaMaker)
 
 using namespace std;
 
 // _________________________________________________________
-StPicoDpmAnaMaker::StPicoDpmAnaMaker(char const* name, StPicoDstMaker* picoMaker, char const* outputBaseFileName,  
+StPicoQaMaker::StPicoQaMaker(char const* name, StPicoDstMaker* picoMaker, char const* outputBaseFileName,  
 				       char const* inputHFListHFtree = "") :
   StPicoHFMaker(name, picoMaker, outputBaseFileName, inputHFListHFtree),
   mDecayChannel(kChannel1), mRefmultCorrUtil(NULL),mOutFileBaseName(outputBaseFileName){
@@ -21,12 +21,12 @@ StPicoDpmAnaMaker::StPicoDpmAnaMaker(char const* name, StPicoDstMaker* picoMaker
 }
 
 // _________________________________________________________
-StPicoDpmAnaMaker::~StPicoDpmAnaMaker() {
+StPicoQaMaker::~StPicoQaMaker() {
   // destructor
 }
 
 // _________________________________________________________
-int StPicoDpmAnaMaker::InitHF() {
+int StPicoQaMaker::InitHF() {
   // -- INITIALIZE USER HISTOGRAMS ETC HERE -------------------
   //    add them to the output list mOutList which is automatically written
 
@@ -198,12 +198,12 @@ int StPicoDpmAnaMaker::InitHF() {
 }
 
 // _________________________________________________________
-void StPicoDpmAnaMaker::ClearHF(Option_t *opt="") {
+void StPicoQaMaker::ClearHF(Option_t *opt="") {
   return;
 }
 
 // _________________________________________________________
-int StPicoDpmAnaMaker::FinishHF() {
+int StPicoQaMaker::FinishHF() {
    if( isMakerMode() != StPicoHFMaker::kWrite )
     //ntp_Dmeson->Write();
    //closeFile(); // for QA (analysis)
@@ -211,7 +211,7 @@ int StPicoDpmAnaMaker::FinishHF() {
 }
 
 // _________________________________________________________
-int StPicoDpmAnaMaker::MakeHF() {
+int StPicoQaMaker::MakeHF() {
   // -- process event
   //    ADD YOUR PROCESSING CODE HERE
   //    ... it is usefull to use the methods below
@@ -684,7 +684,7 @@ int StPicoDpmAnaMaker::MakeHF() {
   return kStOK;
 }
 
-int StPicoDpmAnaMaker::createQA(){
+int StPicoQaMaker::createQA(){
        //int const currentRun = mPicoHFEvent->runId();
        //if(currentRun != mRunNumber)
      //  {
@@ -781,7 +781,7 @@ int StPicoDpmAnaMaker::createQA(){
 }
 
 // _________________________________________________________
-int StPicoDpmAnaMaker::createCandidates() {
+int StPicoQaMaker::createCandidates() {
   // Creating candidates for D+- 3 body decay
   // D+- -> K+2Pi decay
 
@@ -816,7 +816,7 @@ int StPicoDpmAnaMaker::createCandidates() {
 }
 
 // _________________________________________________________
-int StPicoDpmAnaMaker::analyzeCandidates() {
+int StPicoQaMaker::analyzeCandidates() {
 
 //not used in Run16 QA
 
@@ -824,13 +824,13 @@ int StPicoDpmAnaMaker::analyzeCandidates() {
 }
 
 // _________________________________________________________
-bool StPicoDpmAnaMaker::isHadron(StPicoTrack const * const trk, int pidFlag) const {
+bool StPicoQaMaker::isHadron(StPicoTrack const * const trk, int pidFlag) const {
   // -- good hadron
   return (mHFCuts->isGoodTrack(trk) && mHFCuts->isTPCHadron(trk, pidFlag));
 }
 
 // _________________________________________________________
-bool StPicoDpmAnaMaker::isPion(StPicoTrack const * const trk) const {
+bool StPicoQaMaker::isPion(StPicoTrack const * const trk) const {
   // -- good pion
    StThreeVectorF t = trk->pMom();
    if (fabs(t.pseudoRapidity()) > 1.) return false; //pridano fabs 1212
@@ -841,7 +841,7 @@ bool StPicoDpmAnaMaker::isPion(StPicoTrack const * const trk) const {
 }
 
 // _________________________________________________________
-bool StPicoDpmAnaMaker::isKaon(StPicoTrack const * const trk) const {
+bool StPicoQaMaker::isKaon(StPicoTrack const * const trk) const {
   // -- good kaon
   StThreeVectorF t = trk->pMom();
   if (fabs(t.pseudoRapidity()) > 1.) return false;//pridano fabs 1212
@@ -852,12 +852,12 @@ bool StPicoDpmAnaMaker::isKaon(StPicoTrack const * const trk) const {
 } 
 
 // _________________________________________________________
-bool StPicoDpmAnaMaker::isProton(StPicoTrack const * const trk) const {
+bool StPicoQaMaker::isProton(StPicoTrack const * const trk) const {
   // -- good proton
   return (mHFCuts->isGoodTrack(trk) && mHFCuts->isTPCHadron(trk, StPicoCutsBase::kProton));
 }
 
-double StPicoDpmAnaMaker::DCA(StPicoTrack const * const trk, StThreeVectorF const & vtx) const {
+double StPicoQaMaker::DCA(StPicoTrack const * const trk, StThreeVectorF const & vtx) const {
   // -- particle DCA
 /*  StPhysicalHelixD pHelix = trk->dcaGeometry().helix(); //SL16d
   pHelix.moveOrigin(pHelix.pathLength(vtx)); 
@@ -867,7 +867,7 @@ double StPicoDpmAnaMaker::DCA(StPicoTrack const * const trk, StThreeVectorF cons
 }
 
 
-bool StPicoDpmAnaMaker::isCloseTracks(StPicoTrack const * const trk1, StPicoTrack const * const trk2, StThreeVectorF const & vtx, float bField) const {
+bool StPicoQaMaker::isCloseTracks(StPicoTrack const * const trk1, StPicoTrack const * const trk2, StThreeVectorF const & vtx, float bField) const {
 /* SL16d  
   StPhysicalHelixD p1Helix = trk1->dcaGeometry().helix();
   StPhysicalHelixD p2Helix = trk2->dcaGeometry().helix();
@@ -897,7 +897,7 @@ bool StPicoDpmAnaMaker::isCloseTracks(StPicoTrack const * const trk1, StPicoTrac
 
 //-----------------------------------------------------------------------------
 
-void StPicoDpmAnaMaker::histoInit(TString fileBaseName, bool fillQaHists){
+void StPicoQaMaker::histoInit(TString fileBaseName, bool fillQaHists){
   TString m_ParticleName[m_nParticles] = {"Pion", "Kaon", "Proton"};
 
    float m_EtaEdgeDca[m_nEtasDca+1] = {-1.0, -0.6, -0.2, 0.2, 0.6, 1.0}; //replace bottom!!!
@@ -1016,7 +1016,7 @@ void StPicoDpmAnaMaker::histoInit(TString fileBaseName, bool fillQaHists){
 }
 
 //-----------------------------------------------------------------------
-void StPicoDpmAnaMaker::addTpcDenom1(bool IsPion, bool IsKaon, bool IsProton, float pt, int centrality, float Eta, float Phi, float Vz){
+void StPicoQaMaker::addTpcDenom1(bool IsPion, bool IsKaon, bool IsProton, float pt, int centrality, float Eta, float Phi, float Vz){
    int EtaIndex = getEtaIndexRatio(Eta);
    int PhiIndex = getPhiIndexRatio(Phi);
    int VzIndex = getVzIndexRatio(Vz);
@@ -1040,7 +1040,7 @@ void StPicoDpmAnaMaker::addTpcDenom1(bool IsPion, bool IsKaon, bool IsProton, fl
    if (fabs(Eta) < 0.1 && pt > 3.0) mh2Tpc1PhiVz->Fill(Phi, Vz);
 }
 //-----------------------------------------------------------------------
-void StPicoDpmAnaMaker::addHFTNumer1(bool IsPion, bool IsKaon, bool IsProton, float pt, int centrality, float Eta, float Phi, float Vz){
+void StPicoQaMaker::addHFTNumer1(bool IsPion, bool IsKaon, bool IsProton, float pt, int centrality, float Eta, float Phi, float Vz){
    int EtaIndex = getEtaIndexRatio(Eta);
    int PhiIndex = getPhiIndexRatio(Phi);
    int VzIndex = getVzIndexRatio(Vz);
@@ -1060,7 +1060,7 @@ void StPicoDpmAnaMaker::addHFTNumer1(bool IsPion, bool IsKaon, bool IsProton, fl
    if (fabs(Eta) < 0.1 && pt > 3.0) mh2HFT1PhiVz->Fill(Phi, Vz);
 }
 //---------------------------------------------------------------------
-void StPicoDpmAnaMaker::addDcaPtCent(float dca, float dcaXy, float dcaZ, bool IsPion, bool IsKaon, bool IsProton, float pt,  int centrality, float Eta, float Phi, float Vz){
+void StPicoQaMaker::addDcaPtCent(float dca, float dcaXy, float dcaZ, bool IsPion, bool IsKaon, bool IsProton, float pt,  int centrality, float Eta, float Phi, float Vz){
    int EtaIndex = getEtaIndexDca(Eta);
    int VzIndex = getVzIndexDca(Vz);
    if(EtaIndex == -1) return;
@@ -1081,7 +1081,7 @@ void StPicoDpmAnaMaker::addDcaPtCent(float dca, float dcaXy, float dcaZ, bool Is
    mh3DcaZPtCent->Fill(pt, centrality, dcaZ);
 }
 //---------------------------------------------------------------------
-int StPicoDpmAnaMaker::getEtaIndexDca(float Eta){
+int StPicoQaMaker::getEtaIndexDca(float Eta){
    float EtaEdgeDca[m_nEtasDca+1] = {-1.0, -0.6, -0.2, 0.2, 0.6, 1.0};
    for (int i = 0; i < m_nEtasDca; i++){
 	 if ((Eta >= EtaEdgeDca[i]) && (Eta < EtaEdgeDca[i + 1]))
@@ -1093,7 +1093,7 @@ int StPicoDpmAnaMaker::getEtaIndexDca(float Eta){
 }
 
 //---------------------------------------------------------------------
-int StPicoDpmAnaMaker::getVzIndexDca(float Vz){
+int StPicoQaMaker::getVzIndexDca(float Vz){
   float VzEdgeDca[m_nVzsDca + 1] = { -6.0, -3.0, 0, 3.0, 6.0};
    for (int i = 0; i < m_nVzsDca; i++){
       if ((Vz >= VzEdgeDca[i]) && (Vz < VzEdgeDca[i + 1]))
@@ -1104,7 +1104,7 @@ int StPicoDpmAnaMaker::getVzIndexDca(float Vz){
    return -1;
 }
 //---------------------------------------------------------------------
-int StPicoDpmAnaMaker::getEtaIndexRatio(float Eta){
+int StPicoQaMaker::getEtaIndexRatio(float Eta){
   float EtaEdgeRatio[m_nEtasRatio + 1] = { -1.0, -0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4 , 0.6, 0.8, 1.0}; 
    for (int i = 0; i < m_nEtasRatio; i++){
       if ((Eta >= EtaEdgeRatio[i]) && (Eta < EtaEdgeRatio[i + 1]))
@@ -1115,7 +1115,7 @@ int StPicoDpmAnaMaker::getEtaIndexRatio(float Eta){
    return -1;
 }
 //---------------------------------------------------------------------
-int StPicoDpmAnaMaker::getPhiIndexRatio(float Phi){
+int StPicoQaMaker::getPhiIndexRatio(float Phi){
   float PhiEdgeRatio[m_nPhisRatio + 1] = { -3.14159, -2.80359, -2.17527, -1.54696, -0.918637, -0.290319, 0.338, 0.966319, 1.59464, 2.22296, 2.85127, 3.14159};
    for (int i = 0; i < m_nPhisRatio; i++){
       if ((Phi >= PhiEdgeRatio[i]) && (Phi < PhiEdgeRatio[i + 1]))
@@ -1126,7 +1126,7 @@ int StPicoDpmAnaMaker::getPhiIndexRatio(float Phi){
    return -1;
 }
 //---------------------------------------------------------------------
-int StPicoDpmAnaMaker::getVzIndexRatio(float Vz){
+int StPicoQaMaker::getVzIndexRatio(float Vz){
   float VzEdgeRatio[m_nVzsRatio + 1] = { -6.0, -4.0, -2.0, 0, 2.0, 4.0, 6.0};
    for (int i = 0; i < m_nVzsRatio; i++) {
       if ((Vz >= VzEdgeRatio[i]) && (Vz < VzEdgeRatio[i + 1]))
@@ -1137,7 +1137,7 @@ int StPicoDpmAnaMaker::getVzIndexRatio(float Vz){
   return -1;
 }
 
-void StPicoDpmAnaMaker::addCent(const double refmultCor, int centrality, const double reweight, const float vz)
+void StPicoQaMaker::addCent(const double refmultCor, int centrality, const double reweight, const float vz)
 {
    mh1gRefmultCor->Fill(refmultCor);
    mh1gRefmultCorWg->Fill(refmultCor, reweight);
@@ -1148,7 +1148,7 @@ void StPicoDpmAnaMaker::addCent(const double refmultCor, int centrality, const d
 }
 
 //---------------------------------------------------------------------
-void StPicoDpmAnaMaker::closeFile()
+void StPicoQaMaker::closeFile()
 {
    mOutFile->cd();
 
