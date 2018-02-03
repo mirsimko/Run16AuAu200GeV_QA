@@ -4,33 +4,28 @@
 #include "TFile.h"
 #include "TString.h"
 #include "StPicoEvent/StPicoEvent.h"
-#include "StPicoPrescales/StPicoPrescales.h"
 #include "StPicoHFEvent.h"
 #include "StHFPair.h"
 #include "StHFTriplet.h"
 
 #include "StHFHists.h"
 
-class StPicoPrescales;
 ClassImp(StHFHists)
 
 
 StHFHists::StHFHists() : TNamed("StHFHists", "StHFHists"),
-  mEventList(NULL), mSecondaryPairList(NULL), mTertiaryPairList(NULL), mTripletList(NULL), mPrescales(NULL), mNRuns(0) {
+  mEventList(NULL), mSecondaryPairList(NULL), mTertiaryPairList(NULL), mTripletList(NULL), mNRuns(0) {
 }
 
 
 StHFHists::StHFHists(const char* name) : TNamed(name, name),
-  mEventList(NULL), mSecondaryPairList(NULL), mTertiaryPairList(NULL), mTripletList(NULL), mPrescales(NULL), mNRuns(0){
+  mEventList(NULL), mSecondaryPairList(NULL), mTertiaryPairList(NULL), mTripletList(NULL), mNRuns(0){
 }
 
 
 StHFHists::~StHFHists()
 {
 
-  if (mPrescales)
-    delete mPrescales;
-  mPrescales = NULL;
   // note that histograms are owned by mOutFile. They will be destructed 
   // when the file is closed.
 }
@@ -41,9 +36,6 @@ void StHFHists::init (TList * outList, unsigned int mode){
 
   // path to lists of triggers prescales
   // lists are obtained from http://www.star.bnl.gov/protected/common/common2014/trigger2014/plots_au200gev/
-  const char * prescalesFilesDirectoryName = "./run14AuAu200GeVPrescales";
-  mPrescales = new StPicoPrescales(prescalesFilesDirectoryName); // fix dir name
-  mNRuns = mPrescales->numberOfRuns();
    
 
   // -- event list
@@ -99,7 +91,6 @@ void StHFHists::init (TList * outList, unsigned int mode){
     mTripletList->Add(new TH2F("mh2TripletParticle1DcaVsPt","tripletParticle1DcaVsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
     mTripletList->Add(new TH2F("mh2TripletParticle2DcaVsPt","tripletParticle2DcaVsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
     mTripletList->Add(new TH2F("mh2TripletParticle3DcaVsPt","tripletParticle3DcaVsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
-    mTripletList->Add(new TH2F("mh2TripletCosThetaStarVsPt","tripletCosThetaStarVsPt;p_{T}(triplet)(GeV/c));cos(#theta)",120,0,12,550,0,1.1));
     mTripletList->Add(new TH2F("mh2TripletDcaDaughters12VsPt","tripletDcaDaughters12VsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
     mTripletList->Add(new TH2F("mh2TripletDcaDaughters23VsPt","tripletDcaDaughters23VsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
     mTripletList->Add(new TH2F("mh2TripletDcaDaughters31VsPt","tripletDcaDaughters31VsPt;p_{T}(triplet)(GeV/c));dcaDaughters(cm)",120,0,12,200,0,0.02));
@@ -113,13 +104,7 @@ void StHFHists::init (TList * outList, unsigned int mode){
 //void StHFHists::fillEventHists(StPicoEvent const& picoEvent,StPicoHFEvent const & picoHFEvent,unsigned int const nHftTracks)
 void StHFHists::fillEventHists(StPicoEvent const& picoEvent,StPicoHFEvent const & picoHFEvent)
 {
-  int runIndex = mPrescales->runIndex(picoHFEvent.runId());
-  (static_cast<TH1F*>(mEventList->FindObject("mh1TotalEventsInRun")))->Fill(runIndex);
-  //(static_cast<TH1F*>(mEventList->FindObject("mh1TotalHftTracksInRun")))->Fill(runIndex,nHftTracks);
-  (static_cast<TH1F*>(mEventList->FindObject("mh1TotalGRefMultInRun")))->Fill(runIndex,picoEvent.grefMult());
-  (static_cast<TH1F*>(mEventList->FindObject("mh1TotalHFSecondaryVerticesInRun")))->Fill(runIndex,picoHFEvent.nHFSecondaryVertices());
-  (static_cast<TH1F*>(mEventList->FindObject("mh1TotalHFTertiaryVerticesInRun")))->Fill(runIndex,picoHFEvent.nHFTertiaryVertices());
-  (static_cast<TH2F*>(mEventList->FindObject("mh2NHFSecondaryVsNHFTertiary")))->Fill(picoHFEvent.nHFTertiaryVertices(),picoHFEvent.nHFSecondaryVertices());
+  // currently does not do anything
 }
 
 // fill general histograms for good events
@@ -157,7 +142,6 @@ void StHFHists::fillTripletHists(StHFTriplet const* const t, bool const fillMass
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletParticle1DcaVsPt")))->Fill(t->pt(),t->particle1Dca());
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletParticle2DcaVsPt")))->Fill(t->pt(),t->particle2Dca());
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletParticle3DcaVsPt")))->Fill(t->pt(),t->particle3Dca());
-  (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletCosThetaStarVsPt")))->Fill(t->pt(),t->cosThetaStar());
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletDcaDaughters12VsPt")))->Fill(t->pt(),t->dcaDaughters12());
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletDcaDaughters23VsPt")))->Fill(t->pt(),t->dcaDaughters23());
   (static_cast<TH2F*>(mTripletList->FindObject("mh2TripletDcaDaughters31VsPt")))->Fill(t->pt(),t->dcaDaughters31());
