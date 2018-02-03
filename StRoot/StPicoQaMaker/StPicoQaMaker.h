@@ -15,10 +15,10 @@
 
 #include "StPicoDstMaker/StPicoDst.h"
 #include "StPicoDstMaker/StPicoDstMaker.h"
-#include "StPicoDstMaker/StPicoEvent.h"
-#include "StPicoDstMaker/StPicoTrack.h"
-#include "StPicoDstMaker/StPicoBTofPidTraits.h"
-#include "StPicoDstMaker/StPicoBEmcPidTraits.h"
+#include "StPicoEvent/StPicoEvent.h"
+#include "StPicoEvent/StPicoTrack.h"
+#include "StPicoEvent/StPicoBTofPidTraits.h"
+#include "StPicoEvent/StPicoBEmcPidTraits.h"
 
 #include "StPicoHFMaker/StPicoHFEvent.h"
 #include "StPicoHFMaker/StHFCuts.h"
