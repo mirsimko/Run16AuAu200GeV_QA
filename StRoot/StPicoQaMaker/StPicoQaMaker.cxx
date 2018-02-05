@@ -1026,15 +1026,15 @@ void StPicoQaMaker::addTpcDenom1(bool IsPion, bool IsKaon, bool IsProton, float 
    //std::cout<<"2: "<<IsPion<<" "<<IsKaon<<" "<<IsProton<<" "<<pt<<" "<<centrality<<" "<<Eta<<" "<<Phi<<" "<<Vz<<" "<<EtaIndex<<" "<<PhiIndex<<" "<<VzIndex<<std::endl;
    
    if (IsPion){
-      mh2Tpc1PtCentPartEtaVzPhi[0][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2Tpc1PtCentPartEtaVzPhi[kPionId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
       //if(mh2Tpc1PtCentPartEtaVzPhi[0][EtaIndex][VzIndex][PhiIndex]) std::cout<<"true"<<<<std::endl;
       //std::cout<<pt<<" "<<centrality<<std::endl;
    }
    if (IsKaon){
-      mh2Tpc1PtCentPartEtaVzPhi[1][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2Tpc1PtCentPartEtaVzPhi[kKaonId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
    }
    if (IsProton){
-      mh2Tpc1PtCentPartEtaVzPhi[2][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2Tpc1PtCentPartEtaVzPhi[kProtonId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
    }
    mh2Tpc1PtCent->Fill(pt, centrality);
    if (fabs(Eta) < 0.1 && pt > 3.0) mh2Tpc1PhiVz->Fill(Phi, Vz);
@@ -1048,13 +1048,13 @@ void StPicoQaMaker::addHFTNumer1(bool IsPion, bool IsKaon, bool IsProton, float 
    if(PhiIndex == -1) return;
    if(VzIndex == -1) return;
    if (IsPion){
-      mh2HFT1PtCentPartEtaVzPhi[0][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2HFT1PtCentPartEtaVzPhi[kPionId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
    }
    if (IsKaon){
-      mh2HFT1PtCentPartEtaVzPhi[1][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2HFT1PtCentPartEtaVzPhi[kKaonId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
    }
    if (IsProton){
-      mh2HFT1PtCentPartEtaVzPhi[2][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
+      mh2HFT1PtCentPartEtaVzPhi[kProtonId][EtaIndex][VzIndex][PhiIndex]->Fill(pt, centrality);
    }
    mh2HFT1PtCent->Fill(pt, centrality);
    if (fabs(Eta) < 0.1 && pt > 3.0) mh2HFT1PhiVz->Fill(Phi, Vz);
@@ -1068,13 +1068,13 @@ void StPicoQaMaker::addDcaPtCent(float dca, float dcaXy, float dcaZ, bool IsPion
 
    if (centrality < 0) return; // remove bad centrality, only keep 9 centralities
    if (IsPion){
-      mh3DcaXyZPtCentPartEtaVzPhi[0][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
+      mh3DcaXyZPtCentPartEtaVzPhi[kPionId][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
    }
    if (IsKaon){
-      mh3DcaXyZPtCentPartEtaVzPhi[1][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
+      mh3DcaXyZPtCentPartEtaVzPhi[kKaonId][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
    }
    if (IsProton){
-      mh3DcaXyZPtCentPartEtaVzPhi[2][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
+      mh3DcaXyZPtCentPartEtaVzPhi[kProtonId][EtaIndex][VzIndex][centrality]->Fill(pt, dcaXy, dcaZ);
    }
    mh3DcaPtCent->Fill(pt, centrality, dca);
    mh3DcaXyPtCent->Fill(pt, centrality, dcaXy);
